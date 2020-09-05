@@ -1,12 +1,9 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import requests
+import requests, json, os, time
 import pandas_datareader as pdr
 import datetime as dt
-import json
-import os
-import time
 import xlwings as xw
 from pandas.tseries.offsets import Day, MonthEnd
 import yfinance as yf
@@ -94,13 +91,13 @@ while (hour >= 11) & (hour <= 20):
     now = time.localtime()
     hour = now[3]
     
-    stocks = ['AAPL','AMD','AMZN', 'BA','BABA', 'BBD', 'C','DESP','GOLD','HMY','JPM','KO','MELI','MSFT','NVDA','PBR', 'PFE','QCOM','TSLA','WFC']
+    stocks = ['AAPL','ABEV','AMD','AMZN', 'BA','BABA', 'BBD', 'C','DESP','GOLD','HMY','INTC','JPM','KO','MELI','MSFT','NVDA','PBR', 'PFE','QCOM','TSLA','WFC']
     spx_data = prices(stocks)
 
     cedears = get_access()
     cedears.rename(columns={'Price':'P','Px. Compra':'C', 'Px. Venta': 'V','Horario':'H'}, inplace=True)
     cedears = cedears.loc[:,['Ticker', 'P','C', 'V','H']]
-    factores = [('AAPL',10),('AMD',0.5),('AMZN',72),('BA',3),('BABA',9),('BBD',1),('C', 3),('DESP',1),('GOLD',1),('HMY',1),('JPM',5),('KO',5),('MELI',2),('MSFT',5),('NVDA',12),('PBR',1),('PFE',2),('QCOM',11),('TSLA',15),('WFC', 5)]
+    factores = [('AAPL',10),('ABEV', (1/3)),('AMD',0.5),('AMZN',72),('BA',3),('BABA',9),('BBD',1),('C', 3),('DESP',1),('GOLD',1),('HMY',1),('INTC',5),('JPM',5),('KO',5),('MELI',2),('MSFT',5),('NVDA',12),('PBR',1),('PFE',2),('QCOM',11),('TSLA',15),('WFC', 5)]
     df_fact = pd.DataFrame(factores, columns=['Ticker', 'factor'])
 
     comb = spx_data.merge(cedears,how='left').merge(df_fact, how='left')

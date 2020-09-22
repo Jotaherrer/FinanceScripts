@@ -135,7 +135,8 @@ def clean_data(data_opciones, call=True):
                 else:
                     strikes_calls.append(int(strike))
 
-            elif (e[3] == 'C') & (e[-2:] == vencimiento_lista[2]) | (e[-2:] == vencimiento_lista[3]):
+            #elif (e[3] == 'C') & (e[-2:] == vencimiento_lista[2]) | (e[-2:] == vencimiento_lista[3]):
+            else:
                 word = e
                 where = word.find('C')
                 strike = word[where+1:where+4]

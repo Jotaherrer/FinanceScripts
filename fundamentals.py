@@ -1,6 +1,7 @@
 import yfinance, pandas as pd
 import requests, datetime as dt
 import bs4 as bs
+import pickle
 
 # Tickers
 stocks = ['AAPL','ABEV','AMD','AMZN', 'BA','BABA', 'BBD', 'C','DESP','GOLD','HMY','INTC','JPM','KO','MELI','MSFT','NVDA','PBR', 'PFE','QCOM','TSLA','WFC']
@@ -25,16 +26,26 @@ tickers = spx()
 # Filter fundamental data for US stocks
 stock_data = {}
 for stock in tickers:
-    a = yfinance.Ticker(stock)
-    inf = a.info
-    desired_keys = ['fullTimeExmployees', 'industry', 'previousClose', 'payoutRatio', 'beta', 'trailingPE', 'marketCap', 'averageVolume',
-                    'priceToSalesTrailing12Months', 'fiftyTwoWeekHigh', 'forwardPE', 'fiftyTwoWeekLow', 'enterpriseToRevenue', 'profitMargins',
-                    'enterpriseToEbitda', 'forwardEps', 'bookValue', 'heldPercentInstitutions', 'trailingEps', 'priceToBook', 'heldPercentInsiders',
-                    'shortRatio', 'earningsQuarterlyGrowth', 'pegRatio']
-    stock_data[stock] = {key: value for key, value in inf.items() if key in desired_keys}
-    print('Ok storing {}'.format(stock))
+    if stock not in stock_data:
+        a = yfinance.Ticker(stock)
+        inf = a.info
+        desired_keys = ['fullTimeExmployees', 'industry', 'previousClose', 'payoutRatio', 'beta', 'trailingPE', 'marketCap', 'averageVolume',
+                        'priceToSalesTrailing12Months', 'fiftyTwoWeekHigh', 'forwardPE', 'fiftyTwoWeekLow', 'enterpriseToRevenue', 'profitMargins',
+                        'enterpriseToEbitda', 'forwardEps', 'bookValue', 'heldPercentInstitutions', 'trailingEps', 'priceToBook', 'heldPercentInsiders',
+                        'shortRatio', 'earningsQuarterlyGrowth', 'pegRatio']
+        stock_data[stock] = {key: value for key, value in inf.items() if key in desired_keys}
+        print('Ok storing {}'.format(stock))
+    else:
+        print('{} is already stored in the dictionary'.format(stock))
+
+with open('financial_data.p', 'wb') as f:
+    pickle.dump(stock_data, f)
+
+with open('financial_data.p', 'rb') as f:
+    loaded_data = pickle.load(f)
 
 # Testing results
+loaded_data['WFC']
 stock_data['WFC']
 
 # Storing last price
@@ -71,3 +82,5 @@ for stock in stock_data_arg:
 last_price_arg
 
 # Rolling averages
+mm90 = last_price_arg['GGAL'].rolling('90D', min_periods=5).mean()
+mm30 = last_price_arg['GGAL'].rolling('30D', min_periods=5).mean()

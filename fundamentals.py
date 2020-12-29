@@ -38,25 +38,6 @@ for stock in tickers:
     else:
         print('{} is already stored in the dictionary'.format(stock))
 
-with open('financial_data.p', 'wb') as f:
-    pickle.dump(stock_data, f)
-
-with open('financial_data.p', 'rb') as f:
-    loaded_data = pickle.load(f)
-
-# Testing results
-loaded_data['WFC']
-stock_data['WFC']
-
-# Storing last price
-last_price_us = []
-for stock in stock_data:
-    for item, value in stock_data[stock].items():
-        if item == 'previousClose':
-            last_price_us.append((stock, value))
-# Testing last price
-last_price_us
-
 # Filter fundamental data for ARG stocks
 stock_data_arg = {}
 for stock in adrs:
@@ -69,10 +50,29 @@ for stock in adrs:
     stock_data_arg[stock] = {key: value for key, value in inf.items() if key in desired_keys}
     print('Ok storing {}'.format(stock))
 
+with open('financial_data.p', 'wb') as f:
+    pickle.dump(stock_data, f)
+
+with open('financial_data.p', 'rb') as f:
+    loaded_data = pickle.load(f)
+
 # Testing results
+loaded_data['WFC']
+stock_data = loaded_data
+stock_data['WFC']
 stock_data_arg['GGAL']
 
-# Storing last price
+### STORING SELECTED VARIABLES
+# LAST PRICE US
+last_price_us = []
+for stock in stock_data:
+    for item, value in stock_data[stock].items():
+        if item == 'previousClose':
+            last_price_us.append((stock, value))
+# Testing last price
+last_price_us
+
+# LAST PRICE ARG
 last_price_arg = []
 for stock in stock_data_arg:
     for item, value in stock_data_arg[stock].items():
@@ -81,6 +81,26 @@ for stock in stock_data_arg:
 # Testing last price
 last_price_arg
 
-# Rolling averages
-mm90 = last_price_arg['GGAL'].rolling('90D', min_periods=5).mean()
-mm30 = last_price_arg['GGAL'].rolling('30D', min_periods=5).mean()
+# MARKET CAP US
+market_caps_us = []
+for stock in stock_data:
+    for item, value in stock_data[stock].items():
+        if item =='marketCap':
+            market_caps_us.append((stock, value))
+#Testing market cap
+market_caps_us
+caps = pd.DataFrame(market_caps_us, columns=['Stock', 'Market Cap'])
+caps.sort_values('Market Cap', ascending=False, inplace=True)
+caps.reset_index(drop=True, inplace=True)
+caps = caps[caps.Stock != 'GOOG'].reset_index(drop=True)
+caps[:11]
+
+# Creating dataframes for data
+df_arg = pd.DataFrame(stock_data_arg)
+df_spy = pd.DataFrame(stock_data)
+
+# Sectors
+test = pd.DataFrame(df_spy.iloc[0].values)
+sectors = pd.DataFrame(test[0].unique())
+test[0].unique()
+len(test[0].unique())

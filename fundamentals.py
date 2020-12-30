@@ -82,18 +82,76 @@ for stock in stock_data_arg:
 last_price_arg
 
 # MARKET CAP US
-market_caps_us = []
+market_caps_us, payout_ratio, betas, trail_pe, avg_vol, price_to_sales, fifty_w_high, forw_pe, fifty_w_low, profit_margin, e_to_ebitda, e_to_rev, forw_eps, book_value, inst, trail_eps, p_to_book, short, peg = [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
 for stock in stock_data:
     for item, value in stock_data[stock].items():
         if item =='marketCap':
             market_caps_us.append((stock, value))
+        elif item == 'payoutRatio':
+            payout_ratio.append((stock, value))
+        elif item == "beta":
+            betas.append((stock, value))
+        elif item == "trailingPE":
+            trail_pe.append((stock, value))
+        elif item == "averageVolume":
+            avg_vol.append((stock, value))
+        elif item == "priceToSalesTrailing12Months":
+            price_to_sales.append((stock, value))
+        elif item == "fiftyTwoWeekHigh":
+            fifty_w_high.append((stock, value))
+        elif item == "forwardPE":
+            forw_pe.append((stock, value))
+        elif item == "fiftyTwoWeekLow":
+            fifty_w_low.append((stock, value))
+        elif item == "profitMargins":
+            profit_margin.append((stock, value))
+        elif item == "enterpriseToEbitda":
+            e_to_ebitda.append((stock, value))
+        elif item == "enterpriseToRevenue":
+            e_to_rev.append((stock, value))
+        elif item == "forwardEps":
+            forw_eps.append((stock, value))
+        elif item == "bookValue":
+            book_value.append((stock, value))
+        elif item == "heldPercentInstitutions":
+            inst.append((stock, value))
+        elif item == "trailingEps":
+            trail_eps.append((stock, value))
+        elif item == "priceToBook":
+            p_to_book.append((stock, value))
+        elif item == "shortRatio":
+            short.append((stock, value))
+        elif item == "pegRatio":
+            peg.append((stock, value))
 #Testing market cap
-market_caps_us
 caps = pd.DataFrame(market_caps_us, columns=['Stock', 'Market Cap'])
+payout = pd.DataFrame(payout_ratio, columns=['Stock', 'Payout Ratio'])
+beta = pd.DataFrame(betas, columns=['Stock', 'Beta'])
+trailing_pe = pd.DataFrame(trail_pe, columns=['Stock', 'Trailing PE'])
+average_vol = pd.DataFrame(avg_vol, columns=['Stock', 'Average Volume'])
+price_sales = pd.DataFrame(price_to_sales, columns=['Stock', 'Price/Sales'])
+fifty_high = pd.DataFrame(fifty_w_high, columns=['Stock', '55w High'])
+forward_pe = pd.DataFrame(forw_pe, columns=['Stock', 'Forward PE'])
+fifty_low = pd.DataFrame(fifty_w_low, columns=['Stock', '55w Low'])
+profit_margin = pd.DataFrame(profit_margin, columns=['Stock', 'Profit Margin'])
+enter_ebitda = pd.DataFrame(e_to_ebitda, columns=['Stock', 'EV/EBITDA'])
+enter_rev = pd.DataFrame(e_to_rev, columns=['Stock', 'EV/Revenue'])
+forward_eps = pd.DataFrame(forw_eps, columns=['Stock', 'Forward EPS'])
+book_value = pd.DataFrame(book_value, columns=['Stock', 'Book Value'])
+institutionals = pd.DataFrame(inst, columns=['Stock', '% Institutionals'])
+trailing_eps = pd.DataFrame(trail_eps, columns=['Stock', 'Trailing EPS'])
+price_to_book = pd.DataFrame(p_to_book, columns=['Stock', 'Price/Book Value'])
+short_ratio = pd.DataFrame(short, columns=['Stock', 'Short ratio'])
+peg_ratio = pd.DataFrame(peg, columns=['Stock', 'PEG ratio'])
+
+merged = caps.merge(payout, on='Stock').merge(beta, on='Stock').merge(trailing_pe, on='Stock').merge(average_vol, on='Stock').merge(price_sales, on='Stock').merge(fifty_high, on='Stock').merge(fifty_low, on='Stock').merge(forward_pe, on='Stock').merge(profit_margin, on='Stock').merge(enter_ebitda, on='Stock').merge(enter_rev, on='Stock').merge(forward_eps, on='Stock').merge(book_value, on='Stock').merge(institutionals, on='Stock').merge(trailing_eps, on='Stock').merge(price_to_book, on='Stock').merge(short_ratio, on='Stock').merge(peg_ratio, on='Stock')
+
 caps.sort_values('Market Cap', ascending=False, inplace=True)
 caps.reset_index(drop=True, inplace=True)
 caps = caps[caps.Stock != 'GOOG'].reset_index(drop=True)
 caps[:11]
+
+df_spy.stack()
 
 # Creating dataframes for data
 df_arg = pd.DataFrame(stock_data_arg)

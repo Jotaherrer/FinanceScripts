@@ -2,6 +2,8 @@ import yfinance, pandas as pd
 import requests, datetime as dt
 import bs4 as bs
 import pickle
+import xlwings as xw
+
 
 # Tickers
 stocks = ['AAPL','ABEV','AMD','AMZN', 'BA','BABA', 'BBD', 'C','DESP','GOLD','HMY','INTC','JPM','KO','MELI','MSFT','NVDA','PBR', 'PFE','QCOM','TSLA','WFC']
@@ -144,14 +146,11 @@ price_to_book = pd.DataFrame(p_to_book, columns=['Stock', 'Price/Book Value'])
 short_ratio = pd.DataFrame(short, columns=['Stock', 'Short ratio'])
 peg_ratio = pd.DataFrame(peg, columns=['Stock', 'PEG ratio'])
 
+# Combining dataframes
 merged = caps.merge(payout, on='Stock').merge(beta, on='Stock').merge(trailing_pe, on='Stock').merge(average_vol, on='Stock').merge(price_sales, on='Stock').merge(fifty_high, on='Stock').merge(fifty_low, on='Stock').merge(forward_pe, on='Stock').merge(profit_margin, on='Stock').merge(enter_ebitda, on='Stock').merge(enter_rev, on='Stock').merge(forward_eps, on='Stock').merge(book_value, on='Stock').merge(institutionals, on='Stock').merge(trailing_eps, on='Stock').merge(price_to_book, on='Stock').merge(short_ratio, on='Stock').merge(peg_ratio, on='Stock')
-
-caps.sort_values('Market Cap', ascending=False, inplace=True)
-caps.reset_index(drop=True, inplace=True)
-caps = caps[caps.Stock != 'GOOG'].reset_index(drop=True)
-caps[:11]
-
-df_spy.stack()
+merged_mkt_cap = merged.sort_values('Market Cap', ascending=False).reset_index(drop=True)
+merged_mkt_cap = merged_mkt_cap[merged_mkt_cap.Stock != 'GOOG'].reset_index(drop=True)
+merged_mkt_cap[:11]
 
 # Creating dataframes for data
 df_arg = pd.DataFrame(stock_data_arg)
@@ -162,3 +161,15 @@ test = pd.DataFrame(df_spy.iloc[0].values)
 sectors = pd.DataFrame(test[0].unique())
 test[0].unique()
 len(test[0].unique())
+
+# Envio a excel
+def excel(market_data):
+    """
+    """
+    if os.path.exists('fundamental_data.xlsx'):
+        wb = xw.Book('fundamental_data.xlsx')
+        ws = wb.sheets('Fundamentals')
+        ws.range('A1').expand().value = market_data
+        print('Carga exitosa de datos!')
+
+excel(merged_mkt_cap)

@@ -1,4 +1,8 @@
 # Imports
+"""
+https://www.holisticseo.digital/python-seo/google-trends/
+https://pypi.org/project/pytrends/
+"""
 import pytrends, pandas as pd
 from pytrends.request import TrendReq
 import matplotlib.pyplot as plt
@@ -41,6 +45,15 @@ pytrend2.build_payload(kw_list, cat=0, timeframe='today 3-m', geo='AR')
 daily_interest = pytrend2.interest_over_time()
 daily_interest = daily_interest.reset_index()
 daily_interest
+
+# 3-month inflation
+pytrend3 = TrendReq()
+kw_list3 = ['inflacion']
+pytrend3.build_payload(kw_list3, cat=0, timeframe='today 3-m', geo='AR')
+inflation = pytrend3.interest_over_time()
+inflation = daily_interest.reset_index()
+inflation
+
 
 # Daily search trends
 arg_trend = pytrend.trending_searches(pn='argentina')

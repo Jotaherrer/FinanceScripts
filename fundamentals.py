@@ -150,7 +150,14 @@ peg_ratio = pd.DataFrame(peg, columns=['Stock', 'PEG ratio'])
 merged = caps.merge(payout, on='Stock').merge(beta, on='Stock').merge(trailing_pe, on='Stock').merge(average_vol, on='Stock').merge(price_sales, on='Stock').merge(fifty_high, on='Stock').merge(fifty_low, on='Stock').merge(forward_pe, on='Stock').merge(profit_margin, on='Stock').merge(enter_ebitda, on='Stock').merge(enter_rev, on='Stock').merge(forward_eps, on='Stock').merge(book_value, on='Stock').merge(institutionals, on='Stock').merge(trailing_eps, on='Stock').merge(price_to_book, on='Stock').merge(short_ratio, on='Stock').merge(peg_ratio, on='Stock')
 merged_mkt_cap = merged.sort_values('Market Cap', ascending=False).reset_index(drop=True)
 merged_mkt_cap = merged_mkt_cap[merged_mkt_cap.Stock != 'GOOG'].reset_index(drop=True)
-merged_mkt_cap[:11]
+
+# Distribution of FANGs
+caps = caps[caps.Stock != 'GOOG'].reset_index(drop=True)
+sorted_caps = caps.sort_values('Market Cap', ascending=False).reset_index(drop=True)
+fangs = sorted_caps[:5]
+ex_fangs = sorted_caps[5:]
+sum(ex_fangs['Market Cap'])/sum(fangs['Market Cap'])
+
 
 # Creating dataframes for data
 df_arg = pd.DataFrame(stock_data_arg)
